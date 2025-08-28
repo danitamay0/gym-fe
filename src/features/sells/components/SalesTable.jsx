@@ -14,6 +14,7 @@ const SalesTable = ({ sales }) => {
         <thead>
           <tr>
             <th>Fecha</th>
+            <th>Metodo Pago</th>
             <th>Detalle</th>
             <th>Total</th>
           </tr>
@@ -27,6 +28,7 @@ const SalesTable = ({ sales }) => {
             return (
               <tr key={venta.id}>
                 <td>{new Date(venta.fecha).toLocaleString('es-CO')}</td>
+                <td>{venta.metodo_pago}</td>
                 <td>{detalles}</td>
                 <td>{formatCOP(venta.total)}</td>
               </tr>

@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react'
 import { getAllInventory } from '@/features/inventory/query/inventory.api'
 import Card from '@mui/joy/Card'
 import axios from '@/lib/axios'
+import { useNavigate } from 'react-router-dom'
+import PaymentMethodSelect from '../../../shared/components/PaymentMethodSelect'
 
 const formatCOP = (valor) =>
   new Intl.NumberFormat('es-CO', {
@@ -18,27 +20,31 @@ const formatCOP = (valor) =>
     minimumFractionDigits: 0,
   }).format(valor)
 
+
 const NewSellPage = () => {
+  const navigate = useNavigate()
   const [inventory, setInventory] = useState([])
   const [items, setItems] = useState([{ producto_id: '', cantidad: 1 }])
   const [loading, setLoading] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState(null)
+  const [showErrorPayment, setShowErrorPayment] = useState(false)
 
   useEffect(() => {
     getAllInventory().then(setInventory)
   }, [])
 
-  const handleItemChange = (index, field, value) => {
+  const handleItemChange = (index, field, value)=> {
     const newItems = [...items]
 
     if (field === 'cantidad') {
       const selectedProductId = newItems[index].producto_id
       const inv = inventory.find((i) => i.producto.id === selectedProductId)
       const maxDisponible = inv?.cantidad_disponible ?? Infinity
-      const parsed = parseInt(value)
+      const parsed = parseInt(value, 10)
 
       newItems[index].cantidad = Math.max(
         0,
-        Math.min(parsed || 0, maxDisponible)
+        Math.min(Number.isNaN(parsed) ? 0 : parsed, maxDisponible)
       )
     } else {
       newItems[index][field] = value
@@ -51,6 +57,17 @@ const NewSellPage = () => {
     setItems([...items, { producto_id: '', cantidad: 1 }])
   }
 
+  // ✅ Nuevo: eliminar item
+  const removeItem = (index) => {
+    if (items.length === 1) {
+      // si es el único, resetea la fila
+      setItems([{ producto_id: '', cantidad: 1 }])
+      return
+    }
+    const newItems = items.filter((_, i) => i !== index)
+    setItems(newItems)
+  }
+
   const total = items.reduce((acc, item) => {
     const inv = inventory.find((i) => i.producto.id === item.producto_id)
     const precio = inv ? parseFloat(inv.producto.precio_venta) : 0
@@ -58,7 +75,6 @@ const NewSellPage = () => {
   }, 0)
 
   const handleSubmit = async () => {
-    // Eliminar ítems sin producto seleccionado o con precio/cantidad inválido
     const filteredItems = items.filter((item) => {
       const inv = inventory.find((i) => i.producto.id === item.producto_id)
       const precio = inv ? parseFloat(inv.producto.precio_venta) : 0
@@ -70,8 +86,13 @@ const NewSellPage = () => {
       return
     }
 
+    if (!paymentMethod) {
+      setShowErrorPayment(true)
+      return
+    }
     const payload = {
       cliente_id: null,
+      metodo_pago_id: paymentMethod,
       items: filteredItems.map((item) => {
         const inv = inventory.find((i) => i.producto.id === item.producto_id)
         return {
@@ -85,8 +106,8 @@ const NewSellPage = () => {
     try {
       setLoading(true)
       await axios.post('/sales', payload)
-      alert('Venta registrada con éxito')
       setItems([{ producto_id: '', cantidad: 1 }])
+      navigate('/sells')
     } catch (error) {
       console.error(error)
       alert('Error al guardar la venta')
@@ -102,12 +123,13 @@ const NewSellPage = () => {
 
         <Sheet className="p-4 space-y-4 rounded-lg ">
           {/* Cabecera */}
-          <div className="grid grid-cols-5 gap-4 font-medium text-sm text-slate-600  pb-2">
+          <div className="grid grid-cols-6 gap-4 font-medium text-sm text-slate-600 pb-2">
             <span>Producto</span>
             <span>Disponible</span>
             <span>Cantidad</span>
             <span>Precio</span>
             <span>Subtotal</span>
+            <span className="text-right">Acciones</span>
           </div>
 
           {items.map((item, index) => {
@@ -120,13 +142,13 @@ const NewSellPage = () => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-5 gap-4 items-center py-2"
+                className="grid grid-cols-6 gap-4 items-center py-2"
               >
                 <Select
                   placeholder="Producto"
                   value={item.producto_id}
                   onChange={(_, val) =>
-                    handleItemChange(index, 'producto_id', val)
+                    handleItemChange(index, 'producto_id', val || '')
                   }
                 >
                   {inventory.map((inv) => (
@@ -145,26 +167,52 @@ const NewSellPage = () => {
                   onChange={(e) =>
                     handleItemChange(index, 'cantidad', e.target.value)
                   }
+                  slotProps={{ input: { min: 0 } }}
                 />
 
                 <Typography>{formatCOP(precio)}</Typography>
 
                 <Typography>{formatCOP(subtotal)}</Typography>
+
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="soft"
+                    color="danger"
+                    onClick={() => removeItem(index)}
+                  >
+                    Eliminar
+                  </Button>
+                </div>
               </div>
             )
           })}
 
-          <Button onClick={addItem} size="sm" variant="outlined">
-            + Agregar producto
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={addItem} size="sm" variant="outlined">
+              + Agregar producto
+            </Button>
+          </div>
 
           <div className="flex justify-between items-center pt-4 mt-8 border-t border-gray-400">
             <Typography level="title-lg">Total</Typography>
             <Typography level="title-lg">{formatCOP(total)}</Typography>
           </div>
+          <div className="pt-4 mb-4">
+             <PaymentMethodSelect onSelected={(methodId) => {
+              // Aquí puedes manejar el método de pago seleccionado
+              console.log(methodId);
+              
+              setPaymentMethod(methodId)
+            }} /> 
 
+            {
+              showErrorPayment && !paymentMethod && <h5 className='text-red-500 mb-4'>Selecciona el metodo de pago</h5>
+            }
+          </div>
           <div className="pt-2">
-            <Button onClick={handleSubmit} loading={loading}>
+           
+            <Button  className='mt-4' onClick={handleSubmit} loading={loading}>
               Guardar venta
             </Button>
           </div>

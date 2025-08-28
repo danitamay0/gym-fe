@@ -46,7 +46,7 @@ const DashboardResumenPage = () => {
                 />
                 <Input
                     type="date"
-                    value={endDate}
+                    value={endDate} 
                     onChange={(e) => setEndDate(e.target.value)}
                 />
                 <Button onClick={handleFilter}>Filtrar</Button>

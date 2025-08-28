@@ -13,12 +13,16 @@ import { useMemberships } from '@features/memberships/query/useMemberships'
 import { useCreateClient } from '@features/clients/query/useCreateClient'
 import { useNavigate } from 'react-router-dom'
 import FingerprintEnrollment from '../../../shared/components/FingerprintEnrollment'
+import PaymentMethodSelect from '../../../shared/components/PaymentMethodSelect'
 
 const NewClientPage = () => {
   const navigate = useNavigate()
   const { memberships, loading: loadingMemberships, error } = useMemberships()
   const { createClient, loading: creating } = useCreateClient()
   const [clienteId, setClienteId] = useState(null)
+
+  const [paymentMethod, setPaymentMethod] = useState(null)
+  const [showErrorPayment, setShowErrorPayment] = useState(false)
 
   const [form, setForm] = useState({
     nombre: '',
@@ -61,6 +65,7 @@ const NewClientPage = () => {
     if (!form.membership.fecha_inicio) newErrors.fecha_inicio = 'Requerido'
     if (!form.membership.fecha_fin) newErrors.fecha_fin = 'Requerido'
     if (!form.membership.precio_pagado) newErrors.precio_pagado = 'Requerido'
+    if (!paymentMethod) setShowErrorPayment(true)
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -163,7 +168,15 @@ const NewClientPage = () => {
             />
             {errors.fecha_fin && <FormHelperText color="danger">{errors.fecha_fin}</FormHelperText>}
           </div>
+            <div className="pt-4 mb-4">
+             <PaymentMethodSelect onSelected={(methodId) => {
+              setPaymentMethod(methodId)
+            }} /> 
 
+            {
+              showErrorPayment && !paymentMethod && <h5 className='text-red-500 mb-4'>Selecciona el metodo de pago</h5>
+            }
+          </div>
           <div>
             <FormLabel>Precio pagado</FormLabel>
             <Input
