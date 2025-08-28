@@ -42,7 +42,6 @@ const ClientsTable = ({ clients, filterStatus = 'all', onMebership }) => {
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Correo</th>
             <th>Teléfono</th>
             <th>Fecha Nacimiento</th>
             <th>Membresía</th>
@@ -58,7 +57,6 @@ const ClientsTable = ({ clients, filterStatus = 'all', onMebership }) => {
             return (
               <tr key={c.id} className={!m ? 'bg-gray-100' : ''}>
                 <td>{c.nombre}</td>
-                <td>{c.correo}</td>
                 <td>{c.telefono}</td>
                 <td>{c.fecha_nacimiento}</td>
                 <td>{m?.membresia?.tipo || 'N/A'}</td>
