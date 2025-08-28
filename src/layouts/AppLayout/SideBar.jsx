@@ -1,6 +1,12 @@
 import React from 'react'
 import { Sheet, List, ListItemButton, ListItemDecorator, Typography } from '@mui/joy'
 import Divider from '@mui/joy/Divider'
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import InsertChartIcon from '@mui/icons-material/InsertChart';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+
 import { NavLink } from 'react-router-dom'
 import GroupIcon from '@mui/icons-material/Groups'
 
@@ -23,13 +29,13 @@ const SideBar = () => {
 
         <ListItemButton component={NavLink} to="/sells">
           <ListItemDecorator>
-            <GroupIcon />
+            <MonetizationOnIcon />
           </ListItemDecorator>
           Ventas
         </ListItemButton>
         <ListItemButton component={NavLink} to="/inventory">
           <ListItemDecorator>
-            <GroupIcon />
+            <InventoryIcon />
           </ListItemDecorator>
           Inventario
         </ListItemButton>
@@ -41,7 +47,7 @@ const SideBar = () => {
         </ListItemButton>
         <ListItemButton component={NavLink} to="/resumen">
           <ListItemDecorator>
-            <GroupIcon />
+            <InsertChartIcon />
           </ListItemDecorator>
           Resumen de cuentas
         </ListItemButton>
@@ -50,14 +56,14 @@ const SideBar = () => {
         <Typography level="h5" className=" pt-7 mt-8 pb-4">Configuración</Typography>
         <ListItemButton component={NavLink} to="/memberships">
           <ListItemDecorator>
-            <GroupIcon />
+            <WorkspacePremiumIcon />
           </ListItemDecorator>
           Tipos de Membresías
         </ListItemButton>
         <ListItemButton component={NavLink} to="/products">
 
           <ListItemDecorator>
-            <GroupIcon />
+            <LocalCafeIcon />
           </ListItemDecorator>
           Productos
         </ListItemButton>
