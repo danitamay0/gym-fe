@@ -72,8 +72,9 @@ const NewClientPage = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return
+    const data = { ...form, membership:{...form.membership, metodo_pago_id: paymentMethod} }
     try {
-      const res = await createClient(form)
+      const res = await createClient(data)
       setClienteId(res.id) // ← Guarda el ID
       //navigate('/clients')
     } catch (err) {

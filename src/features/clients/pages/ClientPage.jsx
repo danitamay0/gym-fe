@@ -60,7 +60,10 @@ const ClientsPage = () => {
         </div>
       </div>
 
-      <ClientsTable onMebership={(client)=>{ setSelectedClient(client); setOpenRenewMembership(true) }} clients={clients} filterStatus={filterStatus} />
+      <ClientsTable onMebership={(client)=>{ setSelectedClient(client); setOpenRenewMembership(true) }}
+       clients={clients} filterStatus={filterStatus} 
+       onRefresh={refetch}
+       />
       <RenewMembershipModal
         open={openRenewMembership}
         clientId={selectedClient?.id}

@@ -46,7 +46,7 @@ const DashboardResumenPage = () => {
                 />
                 <Input
                     type="date"
-                    value={endDate} 
+                    value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                 />
                 <Button onClick={handleFilter}>Filtrar</Button>
@@ -107,7 +107,10 @@ const DashboardResumenPage = () => {
             </Card>
 
             <div className="text-end mt-6">
-                <Typography level="h4">
+                {resumen?.detalles?.map(d => <div key={d.id}>{d.metodo_pago} : <span className='font-bold text-gray-700'>{formatCOP(d.total || 0)}</span>
+                    <div className='border-b border-gray-200 my-2'></div>
+                </div>)}
+                <Typography level="h4">u
                     Total Global: {formatCOP(resumen.total_global || 0)}
                 </Typography>
             </div>
