@@ -6,6 +6,7 @@ import ProductsPage from '../features/product/pages/ProductsPage'
 import InventoryPage from '../features/inventory/pages/InventoryPage'
 import NewSellPage from '../features/sells/pages/newSellPage'
 import SalesPage from '../features/sells/pages/SalesPage'
+import HistoryMembershipPage from '../features/memberships/pages/HistoryMembershipPage'
 import DashboardResumenPage from '../features/sells/pages/DashboardResumenPage'
 
 const privateRoutes = [
@@ -14,8 +15,16 @@ const privateRoutes = [
     element: <AppLayout />,
     children: [
       {
+        path: '/',
+        element: <MembershipsPage />,
+      },
+      {
         path: 'memberships',
         element: <MembershipsPage />,
+      },
+      {
+        path: 'memberships-pays',
+        element: <HistoryMembershipPage />,
       },
       {
         path: 'clients',

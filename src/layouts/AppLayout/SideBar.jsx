@@ -33,6 +33,12 @@ const SideBar = () => {
           </ListItemDecorator>
           Inventario
         </ListItemButton>
+        <ListItemButton component={NavLink} to="/memberships-pays">
+          <ListItemDecorator>
+            <GroupIcon />
+          </ListItemDecorator>
+          Historial pagos de membresia
+        </ListItemButton>
         <ListItemButton component={NavLink} to="/resumen">
           <ListItemDecorator>
             <GroupIcon />

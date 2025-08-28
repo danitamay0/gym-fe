@@ -93,7 +93,7 @@ const DashboardResumenPage = () => {
                         <tbody>
                             {resumen?.membresias.resumen?.map((m) => (
                                 <tr key={m.tipo}>
-                                    <td>{m.tipo}</td>
+                                    <td>{m.tipo} X {m.cantidad}</td>
                                     <td>{formatCOP(m.subtotal || 0)}</td>
                                 </tr>
                             ))}
